@@ -15,6 +15,8 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+export { AuthContext };
+
 const STORAGE_KEY = 'toyswap_userId';
 
 export function AuthProvider({ children }: { children: ReactNode }) {

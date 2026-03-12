@@ -47,59 +47,115 @@ class ItemRepositoryTest {
     }
 
     @Test
-    void findByCurrentOwner_returnsItemsForThatOwner() {
+    void findByCurrentOwnerAndActiveTrue_returnsItemsForThatOwner() {
         itemRepository.save(buildItem("Lego", "toy", "child", owner));
         itemRepository.save(buildItem("Puzzle", "toy", "child", owner));
 
-        List<Item> items = itemRepository.findByCurrentOwner(owner);
+        List<Item> items = itemRepository.findByCurrentOwnerAndActiveTrue(owner);
 
         assertThat(items).hasSize(2);
         assertThat(items).extracting(Item::getName).containsExactlyInAnyOrder("Lego", "Puzzle");
     }
 
     @Test
-    void findByCurrentOwner_returnsEmptyListWhenNoItems() {
-        List<Item> items = itemRepository.findByCurrentOwner(owner);
+    void findByCurrentOwnerAndActiveTrue_returnsEmptyListWhenNoItems() {
+        List<Item> items = itemRepository.findByCurrentOwnerAndActiveTrue(owner);
 
         assertThat(items).isEmpty();
     }
 
     @Test
-    void findByType_returnsOnlyMatchingType() {
+    void findByCurrentOwnerAndActiveTrue_excludesInactiveItems() {
+        Item active = buildItem("Lego", "toy", "child", owner);
+        Item inactive = buildItem("Old Toy", "toy", "child", owner);
+        inactive.setActive(false);
+        itemRepository.save(active);
+        itemRepository.save(inactive);
+
+        List<Item> items = itemRepository.findByCurrentOwnerAndActiveTrue(owner);
+
+        assertThat(items).hasSize(1);
+        assertThat(items.get(0).getName()).isEqualTo("Lego");
+    }
+
+    @Test
+    void findByTypeAndActiveTrue_returnsOnlyMatchingType() {
         itemRepository.save(buildItem("Lego", "toy", "child", null));
         itemRepository.save(buildItem("Moby Dick", "book", "kid", null));
         itemRepository.save(buildItem("Puzzle", "toy", "toddler", null));
 
-        List<Item> toys = itemRepository.findByType("toy");
+        List<Item> toys = itemRepository.findByTypeAndActiveTrue("toy");
 
         assertThat(toys).hasSize(2);
         assertThat(toys).extracting(Item::getType).containsOnly("toy");
     }
 
     @Test
-    void findByType_returnsEmptyListForUnknownType() {
-        List<Item> items = itemRepository.findByType("unknown");
+    void findByTypeAndActiveTrue_returnsEmptyListForUnknownType() {
+        List<Item> items = itemRepository.findByTypeAndActiveTrue("unknown");
 
         assertThat(items).isEmpty();
     }
 
     @Test
-    void findByAgeLevel_returnsOnlyMatchingLevel() {
+    void findByTypeAndActiveTrue_excludesInactiveItems() {
+        Item active = buildItem("Lego", "toy", "child", null);
+        Item inactive = buildItem("Old Toy", "toy", "child", null);
+        inactive.setActive(false);
+        itemRepository.save(active);
+        itemRepository.save(inactive);
+
+        List<Item> toys = itemRepository.findByTypeAndActiveTrue("toy");
+
+        assertThat(toys).hasSize(1);
+        assertThat(toys.get(0).getName()).isEqualTo("Lego");
+    }
+
+    @Test
+    void findByAgeLevelAndActiveTrue_returnsOnlyMatchingLevel() {
         itemRepository.save(buildItem("Rattle", "toy", "baby", null));
         itemRepository.save(buildItem("Blocks", "toy", "toddler", null));
         itemRepository.save(buildItem("Teddy", "toy", "baby", null));
 
-        List<Item> babyItems = itemRepository.findByAgeLevel("baby");
+        List<Item> babyItems = itemRepository.findByAgeLevelAndActiveTrue("baby");
 
         assertThat(babyItems).hasSize(2);
         assertThat(babyItems).extracting(Item::getAgeLevel).containsOnly("baby");
     }
 
     @Test
-    void findByAgeLevel_returnsEmptyListForUnknownLevel() {
-        List<Item> items = itemRepository.findByAgeLevel("adult");
+    void findByAgeLevelAndActiveTrue_returnsEmptyListForUnknownLevel() {
+        List<Item> items = itemRepository.findByAgeLevelAndActiveTrue("adult");
 
         assertThat(items).isEmpty();
+    }
+
+    @Test
+    void findByAgeLevelAndActiveTrue_excludesInactiveItems() {
+        Item active = buildItem("Rattle", "toy", "baby", null);
+        Item inactive = buildItem("Old Rattle", "toy", "baby", null);
+        inactive.setActive(false);
+        itemRepository.save(active);
+        itemRepository.save(inactive);
+
+        List<Item> babyItems = itemRepository.findByAgeLevelAndActiveTrue("baby");
+
+        assertThat(babyItems).hasSize(1);
+        assertThat(babyItems.get(0).getName()).isEqualTo("Rattle");
+    }
+
+    @Test
+    void findByActiveTrue_returnsOnlyActiveItems() {
+        Item active = buildItem("Lego", "toy", "child", null);
+        Item inactive = buildItem("Puzzle", "toy", "child", null);
+        inactive.setActive(false);
+        itemRepository.save(active);
+        itemRepository.save(inactive);
+
+        List<Item> activeItems = itemRepository.findByActiveTrue();
+
+        assertThat(activeItems).hasSize(1);
+        assertThat(activeItems.get(0).getName()).isEqualTo("Lego");
     }
 
     @Test
