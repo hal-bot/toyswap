@@ -44,6 +44,9 @@ public class Item {
     @Column(name = "age_level")
     private String ageLevel;
 
+    @Column(name = "active", nullable = false)
+    private boolean active = true;
+
     public Item() {
     }
 
@@ -117,5 +120,13 @@ public class Item {
 
     public void setAgeLevel(String ageLevel) {
         this.ageLevel = ageLevel;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

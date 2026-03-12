@@ -4,7 +4,6 @@ export interface Swapper {
   userId: string;
   firstName: string;
   lastName: string;
-  birthday: string; // MM/dd/yyyy
   username: string;
   zipCode?: string;
 }
@@ -19,8 +18,31 @@ export interface Item {
   name: string;
   condition: ItemCondition;
   requireBatteries: boolean;
-  whenPurchased: string; // MM/dd/yyyy
-  estimatedValue: number;
   currentOwner?: Pick<Swapper, 'userId' | 'username'>;
   ageLevel: AgeLevel;
+  active: boolean;
+}
+
+export interface SwapRequest {
+  offerItemId: number;
+  requestItemId: number;
+}
+
+export interface SwapResponse {
+  offerItem: Item;
+  requestItem: Item;
+}
+
+export interface LoginRequest {
+  username: string;
+  password: string;
+}
+
+export interface CreateSwapperRequest {
+  userId: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  password: string;
+  zipCode?: string;
 }

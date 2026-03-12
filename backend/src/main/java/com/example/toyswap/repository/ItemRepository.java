@@ -10,9 +10,11 @@ import java.util.List;
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    List<Item> findByCurrentOwner(Swapper owner);
+    List<Item> findByActiveTrue();
 
-    List<Item> findByType(String type);
+    List<Item> findByCurrentOwnerAndActiveTrue(Swapper owner);
 
-    List<Item> findByAgeLevel(String ageLevel);
+    List<Item> findByTypeAndActiveTrue(String type);
+
+    List<Item> findByAgeLevelAndActiveTrue(String ageLevel);
 }

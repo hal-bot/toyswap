@@ -23,7 +23,7 @@ public class ItemController {
 
     @GetMapping
     public List<Item> getAllItems() {
-        return itemRepository.findAll();
+        return itemRepository.findByActiveTrue();
     }
 
     @GetMapping("/{id}")
@@ -33,30 +33,31 @@ public class ItemController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // GET /api/items/owner/{userId} — all items belonging to a swapper
+    // GET /api/items/owner/{userId} — all active items belonging to a swapper
     @GetMapping("/owner/{userId}")
     public ResponseEntity<List<Item>> getItemsByOwner(@PathVariable String userId) {
         return swapperRepository.findById(userId)
-                .map(owner -> ResponseEntity.ok(itemRepository.findByCurrentOwner(owner)))
+                .map(owner -> ResponseEntity.ok(itemRepository.findByCurrentOwnerAndActiveTrue(owner)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     // GET /api/items/type/{type} — filter by toy, book, misc
     @GetMapping("/type/{type}")
     public List<Item> getItemsByType(@PathVariable String type) {
-        return itemRepository.findByType(type);
+        return itemRepository.findByTypeAndActiveTrue(type);
     }
 
     // GET /api/items/age/{ageLevel} — filter by baby, crawler, toddler, child, kid
     @GetMapping("/age/{ageLevel}")
     public List<Item> getItemsByAgeLevel(@PathVariable String ageLevel) {
-        return itemRepository.findByAgeLevel(ageLevel);
+        return itemRepository.findByAgeLevelAndActiveTrue(ageLevel);
     }
 
     // POST /api/items?ownerId={userId}
     @PostMapping
     public ResponseEntity<Item> createItem(@RequestBody Item item,
             @RequestParam(required = false) String ownerId) {
+        item.setActive(true);
         if (ownerId != null) {
             swapperRepository.findById(ownerId).ifPresent(item::setCurrentOwner);
         }
