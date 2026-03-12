@@ -18,7 +18,7 @@ export interface Item {
   name: string;
   condition: ItemCondition;
   requireBatteries: boolean;
-  currentOwner?: Pick<Swapper, 'userId' | 'username'>;
+  currentOwner?: string;
   ageLevel: AgeLevel;
   active: boolean;
 }

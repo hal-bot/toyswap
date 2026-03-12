@@ -23,7 +23,7 @@ export default function ItemSwapPage() {
     Promise.all([getAllItems(), getItemsByOwner(user.userId)])
       .then(([all, mine]) => {
         // Only show other users' active items (API already filters active=true, but filter owner too)
-        const available = all.filter((item) => item.currentOwner?.userId !== user.userId);
+        const available = all.filter((item) => item.currentOwner !== user.userId);
         setAllItems(available);
         setUserItems(mine);
       })

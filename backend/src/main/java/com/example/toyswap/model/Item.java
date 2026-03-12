@@ -1,7 +1,9 @@
 package com.example.toyswap.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -37,7 +39,7 @@ public class Item {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "current_owner_id")
-    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "password" })
+    @JsonIgnore
     private Swapper currentOwner;
 
     // Valid values: baby, crawler, toddler, child, kid
@@ -106,8 +108,14 @@ public class Item {
         this.estimatedValue = estimatedValue;
     }
 
+    @JsonIgnore
     public Swapper getCurrentOwner() {
         return currentOwner;
+    }
+
+    @JsonProperty("currentOwner")
+    public String getCurrentOwnerId() {
+        return currentOwner != null ? currentOwner.getUserId() : null;
     }
 
     public void setCurrentOwner(Swapper currentOwner) {

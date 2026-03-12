@@ -18,7 +18,7 @@ export const mockItem = {
   requireBatteries: false,
   ageLevel: 'child',
   active: true,
-  currentOwner: { userId: 'alice', username: 'asmith' },
+  currentOwner: 'alice',
 };
 
 export const mockItem2 = {
@@ -29,7 +29,7 @@ export const mockItem2 = {
   requireBatteries: false,
   ageLevel: 'kid',
   active: true,
-  currentOwner: { userId: 'bob', username: 'bsmith' },
+  currentOwner: 'bob',
 };
 
 // ── Handlers ───────────────────────────────────────────────────────────────

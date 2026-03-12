@@ -14,7 +14,7 @@ const targetItem: Item = {
   requireBatteries: false,
   ageLevel: 'kid',
   active: true,
-  currentOwner: { userId: 'bob', username: 'bsmith' },
+  currentOwner: 'bob',
 };
 
 const userItem: Item = {
@@ -25,7 +25,7 @@ const userItem: Item = {
   requireBatteries: false,
   ageLevel: 'child',
   active: true,
-  currentOwner: { userId: 'alice', username: 'asmith' },
+  currentOwner: 'alice',
 };
 
 function renderModal(userItems: Item[] = [userItem], onClose = vi.fn(), onSwapComplete = vi.fn()) {

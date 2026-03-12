@@ -25,7 +25,7 @@ function makeManyItems(count: number): Item[] {
     requireBatteries: false,
     ageLevel: 'child' as const,
     active: true,
-    currentOwner: { userId: 'bob', username: 'bsmith' },
+    currentOwner: 'bob',
   }));
 }
 
