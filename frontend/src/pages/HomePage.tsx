@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { getItemsByOwner } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import ItemCard from '../components/ItemCard';
@@ -36,9 +36,8 @@ export default function HomePage() {
           T<span className="flip">o</span>ySwa<span className="flip">p</span>
         </span>
         <div className="nav-actions">
-          <button className="btn btn-yellow" style={{ fontSize: '1rem' }} onClick={() => navigate('/add-item')}>
-            + Add a Toy
-          </button>
+          <Link to="/add-item" className="btn btn-yellow" style={{ fontSize: '1rem' }}>Add Item</Link>
+          <Link to="/swap" className="btn btn-green" style={{ fontSize: '1rem' }}>Swap</Link>
           <button className="btn btn-red" style={{ fontSize: '1rem' }} onClick={logout}>
             Log Out
           </button>
@@ -65,7 +64,7 @@ export default function HomePage() {
           <p className="empty-msg">Loading your toys...</p>
         ) : items.length === 0 ? (
           <div className="empty-msg">
-            You need to add some toys before you can swap! Use the <strong>+ Add a Toy</strong> button above.
+            You don't have any toys listed yet! Add some toys to start swapping.
           </div>
         ) : (
           <div className="item-grid">

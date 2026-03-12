@@ -43,9 +43,9 @@ describe('HomePage', () => {
     );
   });
 
-  it('"Add a Toy" button navigates to /add-item', async () => {
+  it('"Add Item" link navigates to /add-item', async () => {
     renderHomePage();
-    await userEvent.click(screen.getByRole('button', { name: /add a toy/i }));
+    await userEvent.click(screen.getByRole('link', { name: /add item/i }));
     await waitFor(() => expect(screen.getByText('Add Item Page')).toBeInTheDocument());
   });
 

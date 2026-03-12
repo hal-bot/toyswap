@@ -61,10 +61,10 @@ test.describe('Swap', () => {
 
     // Click Swap on User B's item
     const itemBCard = page.getByText(itemB.name).locator('..').locator('..');
-    await page.getByText(itemB.name).locator('../..').getByRole('button', { name: /swap/i }).click();
+    await page.getByText(itemB.name).locator('..').getByRole('button', { name: /swap/i }).click();
 
     // SwapModal should open — pick user A's item
-    await expect(page.getByRole('heading', { name: new RegExp(itemB.name, 'i') })).toBeVisible();
+    await expect(page.getByRole('heading', { name: new RegExp(itemB.name, 'i'), level: 2 })).toBeVisible();
     await page.getByText(itemA.name).click();
 
     // Complete Swap button should now be enabled
@@ -96,14 +96,14 @@ test.describe('Swap', () => {
     await expect(page).toHaveURL('/swap');
 
     // Open modal for itemB
-    await page.getByText(itemB.name).locator('../..').getByRole('button', { name: /swap/i }).click();
-    await expect(page.getByRole('heading', { name: new RegExp(itemB.name, 'i') })).toBeVisible();
+    await page.getByText(itemB.name).locator('..').getByRole('button', { name: /swap/i }).click();
+    await expect(page.getByRole('heading', { name: new RegExp(itemB.name, 'i'), level: 2 })).toBeVisible();
 
     // Click Never mind
     await page.getByRole('button', { name: /never mind/i }).click();
 
     // Modal should be gone and item still visible
-    await expect(page.getByRole('heading', { name: new RegExp(itemB.name, 'i') })).toHaveCount(0);
+    await expect(page.getByRole('heading', { name: new RegExp(itemB.name, 'i'), level: 2 })).toHaveCount(0);
     await expect(page.getByText(itemB.name)).toBeVisible();
   });
 
@@ -121,8 +121,8 @@ test.describe('Swap', () => {
     await expect(page).toHaveURL('/swap');
 
     // Open modal
-    await page.getByText(itemB.name).locator('../..').getByRole('button', { name: /swap/i }).click();
-    await expect(page.getByRole('heading', { name: new RegExp(itemB.name, 'i') })).toBeVisible();
+    await page.getByText(itemB.name).locator('..').getByRole('button', { name: /swap/i }).click();
+    await expect(page.getByRole('heading', { name: new RegExp(itemB.name, 'i'), level: 2 })).toBeVisible();
 
     // Verify Complete Swap is disabled before selection
     await expect(page.getByRole('button', { name: /complete swap/i })).toBeDisabled();

@@ -42,6 +42,9 @@ public class Item {
     @JsonIgnore
     private Swapper currentOwner;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     // Valid values: baby, crawler, toddler, child, kid
     @Column(name = "age_level")
     private String ageLevel;
@@ -136,5 +139,13 @@ public class Item {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

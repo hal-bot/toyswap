@@ -8,13 +8,6 @@ import { server } from '../test/handlers';
 import { loginError } from '../test/handlers';
 import type { Swapper } from '../types/api';
 
-const mockUser: Swapper = {
-  userId: 'alice',
-  firstName: 'Alice',
-  lastName: 'Smith',
-  username: 'asmith',
-};
-
 function renderLoginPage(login = (_s: Swapper) => {}) {
   return render(
     <AuthContext.Provider value={{ user: null, login, logout: () => {} }}>

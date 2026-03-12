@@ -21,6 +21,7 @@ export interface Item {
   currentOwner?: string;
   ageLevel: AgeLevel;
   active: boolean;
+  imageUrl?: string;
 }
 
 export interface SwapRequest {

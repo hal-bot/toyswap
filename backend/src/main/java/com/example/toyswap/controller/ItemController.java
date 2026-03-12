@@ -23,7 +23,7 @@ public class ItemController {
 
     @GetMapping
     public List<Item> getAllItems() {
-        return itemRepository.findByActiveTrue();
+        return itemRepository.findByActiveTrueOrderByIdDesc();
     }
 
     @GetMapping("/{id}")

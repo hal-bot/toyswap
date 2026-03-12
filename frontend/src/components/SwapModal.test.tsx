@@ -2,8 +2,6 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import SwapModal from './SwapModal';
-import { server } from '../test/handlers';
-import { swapError } from '../test/handlers';
 import type { Item } from '../types/api';
 
 const targetItem: Item = {

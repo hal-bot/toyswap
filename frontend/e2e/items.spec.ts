@@ -43,7 +43,7 @@ test.describe('Items', () => {
     await page.getByLabel(/age level/i).fill('5+');
     await page.getByLabel(/description/i).fill('A great toy');
     await page.getByLabel(/image url/i).fill('http://example.com/toy.jpg');
-    await page.getByRole('button', { name: /add toy/i }).click();
+    await page.getByRole('button', { name: /add my toy/i }).click();
 
     await expect(page).toHaveURL('/');
     await expect(page.getByText('Super Toy')).toBeVisible();

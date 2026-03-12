@@ -88,7 +88,7 @@ export default function ItemSwapPage() {
                   disabled={page === 1}
                   onClick={() => setPage((p) => p - 1)}
                 >
-                  ← Prev
+                  ← Previous
                 </button>
                 <span>
                   Page {page} of {totalPages}

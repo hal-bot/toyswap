@@ -75,8 +75,8 @@ class SwapControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.offerItem.active").value(false))
                 .andExpect(jsonPath("$.requestItem.active").value(false))
-                .andExpect(jsonPath("$.offerItem.currentOwner.userId").value("u2"))
-                .andExpect(jsonPath("$.requestItem.currentOwner.userId").value("u1"));
+                .andExpect(jsonPath("$.offerItem.currentOwner").value("u2"))
+                .andExpect(jsonPath("$.requestItem.currentOwner").value("u1"));
     }
 
     @Test

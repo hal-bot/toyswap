@@ -29,11 +29,9 @@ function renderAddItemPage() {
 }
 
 describe('AddItemPage', () => {
-  it('renders type dropdown with all enum values', () => {
+  it('renders toy type text input', () => {
     renderAddItemPage();
-    expect(screen.getByRole('option', { name: /^toy$/i })).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: /^book$/i })).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: /^misc$/i })).toBeInTheDocument();
+    expect(screen.getByLabelText(/toy type/i)).toBeInTheDocument();
   });
 
   it('renders condition dropdown with all enum values', () => {
@@ -44,13 +42,9 @@ describe('AddItemPage', () => {
     expect(screen.getByRole('option', { name: /heavy wear/i })).toBeInTheDocument();
   });
 
-  it('renders ageLevel dropdown with all enum values', () => {
+  it('renders age level text input', () => {
     renderAddItemPage();
-    expect(screen.getByRole('option', { name: /^baby$/i })).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: /^crawler$/i })).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: /^toddler$/i })).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: /^child$/i })).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: /^kid$/i })).toBeInTheDocument();
+    expect(screen.getByLabelText(/age level/i)).toBeInTheDocument();
   });
 
   it('requires batteries checkbox toggles', async () => {

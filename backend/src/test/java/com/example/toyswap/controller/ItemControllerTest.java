@@ -77,25 +77,25 @@ class ItemControllerTest {
 
     @Test
     void getAllItems_returnsList() throws Exception {
-        given(itemRepository.findByActiveTrue()).willReturn(
+        given(itemRepository.findByActiveTrueOrderByIdDesc()).willReturn(
                 List.of(buildItem(1L, "Lego", "toy", "child"), buildItem(2L, "Puzzle", "toy", "kid")));
 
         mockMvc.perform(get("/api/items"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2));
 
-        verify(itemRepository).findByActiveTrue();
+        verify(itemRepository).findByActiveTrueOrderByIdDesc();
     }
 
     @Test
     void getAllItems_returnsEmptyList() throws Exception {
-        given(itemRepository.findByActiveTrue()).willReturn(List.of());
+        given(itemRepository.findByActiveTrueOrderByIdDesc()).willReturn(List.of());
 
         mockMvc.perform(get("/api/items"))
                 .andExpect(status().isOk())
                 .andExpect(content().json("[]"));
 
-        verify(itemRepository).findByActiveTrue();
+        verify(itemRepository).findByActiveTrueOrderByIdDesc();
     }
 
     @Test

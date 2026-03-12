@@ -4,16 +4,16 @@
 const BASE = 'http://localhost:8080/api';
 
 const swappers = [
-  { userId: 'bluey_heeler',    username: 'bluey_heeler',    firstName: 'Bluey',    lastName: 'Heeler',    password: 'password123' },
-  { userId: 'bingo_heeler',    username: 'bingo_heeler',    firstName: 'Bingo',    lastName: 'Heeler',    password: 'password123' },
-  { userId: 'bandit_heeler',   username: 'bandit_heeler',   firstName: 'Bandit',   lastName: 'Heeler',    password: 'password123' },
-  { userId: 'chilli_heeler',   username: 'chilli_heeler',   firstName: 'Chilli',   lastName: 'Heeler',    password: 'password123' },
-  { userId: 'jack_wheeler',    username: 'jack_wheeler',    firstName: 'Jack',     lastName: 'Wheeler',   password: 'password123' },
-  { userId: 'chloe_heeler',    username: 'chloe_heeler',    firstName: 'Chloe',    lastName: 'Heeler',    password: 'password123' },
-  { userId: 'judo_malik',      username: 'judo_malik',      firstName: 'Judo',     lastName: 'Malik',     password: 'password123' },
-  { userId: 'mackenzie_dog',   username: 'mackenzie_dog',   firstName: 'Mackenzie', lastName: 'Dog',      password: 'password123' },
-  { userId: 'coco_parrot',     username: 'coco_parrot',     firstName: 'Coco',     lastName: 'Parrot',    password: 'password123' },
-  { userId: 'calypso_teacher', username: 'calypso_teacher', firstName: 'Calypso',  lastName: 'Teacher',   password: 'password123' },
+  { userId: 'bluey_heeler',    username: 'bluey_heeler',    firstName: 'Bluey',     lastName: 'Heeler',  password: 'password123', birthday: '11/10/2018' },
+  { userId: 'bingo_heeler',    username: 'bingo_heeler',    firstName: 'Bingo',     lastName: 'Heeler',  password: 'password123', birthday: '09/14/2020' },
+  { userId: 'bandit_heeler',   username: 'bandit_heeler',   firstName: 'Bandit',    lastName: 'Heeler',  password: 'password123', birthday: '03/05/1983' },
+  { userId: 'chilli_heeler',   username: 'chilli_heeler',   firstName: 'Chilli',    lastName: 'Heeler',  password: 'password123', birthday: '07/22/1985' },
+  { userId: 'jack_wheeler',    username: 'jack_wheeler',    firstName: 'Jack',      lastName: 'Wheeler', password: 'password123', birthday: '04/30/2018' },
+  { userId: 'chloe_heeler',    username: 'chloe_heeler',    firstName: 'Chloe',     lastName: 'Heeler',  password: 'password123', birthday: '06/12/2015' },
+  { userId: 'judo_malik',      username: 'judo_malik',      firstName: 'Judo',      lastName: 'Malik',   password: 'password123', birthday: '02/03/2018' },
+  { userId: 'mackenzie_dog',   username: 'mackenzie_dog',   firstName: 'Mackenzie', lastName: 'Dog',     password: 'password123', birthday: '08/19/2018' },
+  { userId: 'coco_parrot',     username: 'coco_parrot',     firstName: 'Coco',      lastName: 'Parrot',  password: 'password123', birthday: '01/27/2019' },
+  { userId: 'calypso_teacher', username: 'calypso_teacher', firstName: 'Calypso',   lastName: 'Teacher', password: 'password123', birthday: '05/16/1990' },
 ];
 
 // 2 toy, 2 book, 2 misc per swapper — each row: [name, type, condition, ageLevel, requireBatteries]

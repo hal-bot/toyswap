@@ -12,6 +12,8 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     List<Item> findByActiveTrue();
 
+    List<Item> findByActiveTrueOrderByIdDesc();
+
     List<Item> findByCurrentOwnerAndActiveTrue(Swapper owner);
 
     List<Item> findByTypeAndActiveTrue(String type);
