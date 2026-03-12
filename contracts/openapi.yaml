@@ -1,0 +1,351 @@
+openapi: 3.0.3
+info:
+  title: ToySwap API
+  description: REST API for the ToySwap toy and book swapping platform.
+  version: 0.0.1
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+
+tags:
+  - name: Items
+    description: Toy, book, and misc items available for swapping
+  - name: Swappers
+    description: Registered users of the platform
+
+paths:
+
+  # ── Items ────────────────────────────────────────────────────────────────────
+
+  /api/items:
+    get:
+      tags: [Items]
+      summary: List all items
+      operationId: getAllItems
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Item'
+
+    post:
+      tags: [Items]
+      summary: Create an item
+      operationId: createItem
+      parameters:
+        - name: ownerId
+          in: query
+          required: false
+          schema:
+            type: string
+          description: userId of the Swapper who owns this item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+
+  /api/items/{id}:
+    get:
+      tags: [Items]
+      summary: Get item by ID
+      operationId: getItemById
+      parameters:
+        - $ref: '#/components/parameters/itemId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '404':
+          description: Not found
+
+    put:
+      tags: [Items]
+      summary: Update an item
+      operationId: updateItem
+      parameters:
+        - $ref: '#/components/parameters/itemId'
+        - name: ownerId
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Reassign ownership to this userId
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '404':
+          description: Not found
+
+    delete:
+      tags: [Items]
+      summary: Delete an item
+      operationId: deleteItem
+      parameters:
+        - $ref: '#/components/parameters/itemId'
+      responses:
+        '204':
+          description: No content
+        '404':
+          description: Not found
+
+  /api/items/owner/{userId}:
+    get:
+      tags: [Items]
+      summary: Get all items belonging to a swapper
+      operationId: getItemsByOwner
+      parameters:
+        - $ref: '#/components/parameters/userId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Item'
+        '404':
+          description: Swapper not found
+
+  /api/items/type/{type}:
+    get:
+      tags: [Items]
+      summary: Filter items by type
+      operationId: getItemsByType
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [toy, book, misc]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Item'
+
+  /api/items/age/{ageLevel}:
+    get:
+      tags: [Items]
+      summary: Filter items by age level
+      operationId: getItemsByAgeLevel
+      parameters:
+        - name: ageLevel
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [baby, crawler, toddler, child, kid]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Item'
+
+  # ── Swappers ─────────────────────────────────────────────────────────────────
+
+  /api/swappers:
+    get:
+      tags: [Swappers]
+      summary: List all swappers
+      operationId: getAllSwappers
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Swapper'
+
+    post:
+      tags: [Swappers]
+      summary: Register a new swapper
+      operationId: createSwapper
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SwapperRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Swapper'
+        '409':
+          description: userId already exists
+
+  /api/swappers/{userId}:
+    get:
+      tags: [Swappers]
+      summary: Get swapper by userId
+      operationId: getSwapperById
+      parameters:
+        - $ref: '#/components/parameters/userId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Swapper'
+        '404':
+          description: Not found
+
+    put:
+      tags: [Swappers]
+      summary: Update a swapper
+      operationId: updateSwapper
+      parameters:
+        - $ref: '#/components/parameters/userId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SwapperRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Swapper'
+        '404':
+          description: Not found
+
+    delete:
+      tags: [Swappers]
+      summary: Delete a swapper
+      operationId: deleteSwapper
+      parameters:
+        - $ref: '#/components/parameters/userId'
+      responses:
+        '204':
+          description: No content
+        '404':
+          description: Not found
+
+components:
+
+  parameters:
+    itemId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+
+    userId:
+      name: userId
+      in: path
+      required: true
+      schema:
+        type: string
+
+  schemas:
+
+    Swapper:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: Unique identifier chosen by the user
+        firstName:
+          type: string
+        lastName:
+          type: string
+        birthday:
+          type: string
+          pattern: '^\d{2}/\d{2}/\d{4}$'
+          example: '01/15/1990'
+        username:
+          type: string
+        zipCode:
+          type: string
+      required: [userId, firstName, lastName, username]
+
+    SwapperRequest:
+      allOf:
+        - $ref: '#/components/schemas/Swapper'
+        - type: object
+          properties:
+            password:
+              type: string
+              format: password
+          required: [password]
+
+    Item:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+        type:
+          type: string
+          enum: [toy, book, misc]
+        name:
+          type: string
+        condition:
+          type: string
+          enum: [new, lite wear, medium wear, heavy wear]
+        requireBatteries:
+          type: boolean
+        whenPurchased:
+          type: string
+          pattern: '^\d{2}/\d{2}/\d{4}$'
+          example: '06/01/2023'
+        estimatedValue:
+          type: number
+          format: float
+        currentOwner:
+          $ref: '#/components/schemas/Swapper'
+        ageLevel:
+          type: string
+          enum: [baby, crawler, toddler, child, kid]
+      required: [type, name, condition, requireBatteries, ageLevel]
+
+    ItemRequest:
+      $ref: '#/components/schemas/Item'
