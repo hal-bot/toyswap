@@ -37,10 +37,11 @@ export default function ItemSwapPage() {
   const totalPages = Math.ceil(allItems.length / PAGE_SIZE);
   const visibleItems = allItems.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  function handleSwapComplete(offerItemId: number, requestItemId: number) {
-    // Remove both swapped items from lists
+  function handleSwapComplete(offerItemId: number, requestItemId: number, receivedItem: Item) {
+    // Remove both swapped items from the swap list (received item is now ours; offered item is gone)
     setAllItems((prev) => prev.filter((i) => i.id !== offerItemId && i.id !== requestItemId));
-    setUserItems((prev) => prev.filter((i) => i.id !== offerItemId));
+    // Remove the offered item and add the received item to the user's collection
+    setUserItems((prev) => [...prev.filter((i) => i.id !== offerItemId), receivedItem]);
     setSelectedTarget(null);
   }
 

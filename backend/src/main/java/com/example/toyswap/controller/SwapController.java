@@ -24,7 +24,7 @@ public class SwapController {
      * POST /api/swaps
      * Body: { "offerItemId": 1, "requestItemId": 2 }
      *
-     * Validates both items are active, swaps ownership, and marks both inactive.
+     * Validates both items are active, swaps ownership between the two owners.
      * Returns the two updated items.
      */
     @PostMapping
@@ -56,10 +56,6 @@ public class SwapController {
 
         offerItem.setCurrentOwner(requestOwner);
         requestItem.setCurrentOwner(offerOwner);
-
-        // Mark both inactive
-        offerItem.setActive(false);
-        requestItem.setActive(false);
 
         itemRepository.save(offerItem);
         itemRepository.save(requestItem);

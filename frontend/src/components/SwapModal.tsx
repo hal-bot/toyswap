@@ -7,7 +7,7 @@ interface SwapModalProps {
   targetItem: Item;
   userItems: Item[];
   onClose: () => void;
-  onSwapComplete: (offerItemId: number, requestItemId: number) => void;
+  onSwapComplete: (offerItemId: number, requestItemId: number, receivedItem: Item) => void;
 }
 
 export default function SwapModal({ targetItem, userItems, onClose, onSwapComplete }: SwapModalProps) {
@@ -31,7 +31,7 @@ export default function SwapModal({ targetItem, userItems, onClose, onSwapComple
   }
 
   function handleSuccessClose() {
-    onSwapComplete(selectedItem!.id!, targetItem.id!);
+    onSwapComplete(selectedItem!.id!, targetItem.id!, targetItem);
     onClose();
   }
 
