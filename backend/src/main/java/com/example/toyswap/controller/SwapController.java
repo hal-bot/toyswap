@@ -50,12 +50,15 @@ public class SwapController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("One or both items are no longer available.");
         }
 
-        // Swap ownership
+        // Swap ownership and deactivate both items
         Swapper offerOwner = offerItem.getCurrentOwner();
         Swapper requestOwner = requestItem.getCurrentOwner();
 
         offerItem.setCurrentOwner(requestOwner);
         requestItem.setCurrentOwner(offerOwner);
+
+        offerItem.setActive(false);
+        requestItem.setActive(false);
 
         itemRepository.save(offerItem);
         itemRepository.save(requestItem);

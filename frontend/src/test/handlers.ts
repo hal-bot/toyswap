@@ -63,8 +63,8 @@ export const handlers = [
   // Swaps
   http.post('/api/swaps', () =>
     HttpResponse.json({
-      offerItem: { ...mockItem },
-      requestItem: { ...mockItem2 },
+      offerItem: { ...mockItem, active: false },
+      requestItem: { ...mockItem2, active: false },
     })
   ),
 ];
