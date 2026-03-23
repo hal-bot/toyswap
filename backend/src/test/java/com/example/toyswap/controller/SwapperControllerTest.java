@@ -160,4 +160,47 @@ class SwapperControllerTest {
         mockMvc.perform(delete("/api/swappers/ghost"))
                 .andExpect(status().isNotFound());
     }
+
+    // ── Login tests ───────────────────────────────────────────────────────────
+
+    @Test
+    void login_validCredentials_returns200WithoutPassword() throws Exception {
+        given(swapperRepository.findByUsernameAndPassword("asmith_u1", "secret"))
+                .willReturn(java.util.Optional.of(buildSwapper("u1")));
+
+        mockMvc.perform(post("/api/swappers/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"username\":\"asmith_u1\",\"password\":\"secret\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.userId").value("u1"))
+                .andExpect(jsonPath("$.firstName").value("Alice"))
+                .andExpect(jsonPath("$.password").doesNotExist());
+    }
+
+    @Test
+    void login_wrongPassword_returns401() throws Exception {
+        given(swapperRepository.findByUsernameAndPassword("asmith_u1", "wrong"))
+                .willReturn(java.util.Optional.empty());
+
+        mockMvc.perform(post("/api/swappers/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"username\":\"asmith_u1\",\"password\":\"wrong\"}"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void login_missingUsername_returns400() throws Exception {
+        mockMvc.perform(post("/api/swappers/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"password\":\"secret\"}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void login_missingPassword_returns400() throws Exception {
+        mockMvc.perform(post("/api/swappers/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"username\":\"asmith_u1\"}"))
+                .andExpect(status().isBadRequest());
+    }
 }

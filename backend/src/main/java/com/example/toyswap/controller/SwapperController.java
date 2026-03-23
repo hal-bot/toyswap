@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/swappers")
@@ -36,6 +37,19 @@ public class SwapperController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(swapperRepository.save(swapper));
+    }
+
+    // POST /api/login — accepts { username, password }, returns Swapper on success
+    @PostMapping("/login")
+    public ResponseEntity<Swapper> login(@RequestBody Map<String, String> credentials) {
+        String username = credentials.get("username");
+        String password = credentials.get("password");
+        if (username == null || password == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return swapperRepository.findByUsernameAndPassword(username, password)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
     }
 
     @PutMapping("/{userId}")

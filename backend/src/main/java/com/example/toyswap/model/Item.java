@@ -1,7 +1,9 @@
 package com.example.toyswap.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -37,12 +39,18 @@ public class Item {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "current_owner_id")
-    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "password" })
+    @JsonIgnore
     private Swapper currentOwner;
+
+    @Column(name = "image_url")
+    private String imageUrl;
 
     // Valid values: baby, crawler, toddler, child, kid
     @Column(name = "age_level")
     private String ageLevel;
+
+    @Column(name = "active", nullable = false)
+    private boolean active = true;
 
     public Item() {
     }
@@ -103,8 +111,14 @@ public class Item {
         this.estimatedValue = estimatedValue;
     }
 
+    @JsonIgnore
     public Swapper getCurrentOwner() {
         return currentOwner;
+    }
+
+    @JsonProperty("currentOwner")
+    public String getCurrentOwnerId() {
+        return currentOwner != null ? currentOwner.getUserId() : null;
     }
 
     public void setCurrentOwner(Swapper currentOwner) {
@@ -117,5 +131,21 @@ public class Item {
 
     public void setAgeLevel(String ageLevel) {
         this.ageLevel = ageLevel;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

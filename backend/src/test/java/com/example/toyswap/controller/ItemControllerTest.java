@@ -77,21 +77,25 @@ class ItemControllerTest {
 
     @Test
     void getAllItems_returnsList() throws Exception {
-        given(itemRepository.findAll()).willReturn(
+        given(itemRepository.findByActiveTrueOrderByIdDesc()).willReturn(
                 List.of(buildItem(1L, "Lego", "toy", "child"), buildItem(2L, "Puzzle", "toy", "kid")));
 
         mockMvc.perform(get("/api/items"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2));
+
+        verify(itemRepository).findByActiveTrueOrderByIdDesc();
     }
 
     @Test
     void getAllItems_returnsEmptyList() throws Exception {
-        given(itemRepository.findAll()).willReturn(List.of());
+        given(itemRepository.findByActiveTrueOrderByIdDesc()).willReturn(List.of());
 
         mockMvc.perform(get("/api/items"))
                 .andExpect(status().isOk())
                 .andExpect(content().json("[]"));
+
+        verify(itemRepository).findByActiveTrueOrderByIdDesc();
     }
 
     @Test
@@ -117,13 +121,15 @@ class ItemControllerTest {
     void getItemsByOwner_ownerExists_returns200WithItems() throws Exception {
         Swapper owner = buildSwapper("u1");
         given(swapperRepository.findById("u1")).willReturn(Optional.of(owner));
-        given(itemRepository.findByCurrentOwner(any(Swapper.class)))
+        given(itemRepository.findByCurrentOwnerAndActiveTrue(any(Swapper.class)))
                 .willReturn(List.of(buildItem(1L, "Lego", "toy", "child")));
 
         mockMvc.perform(get("/api/items/owner/u1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1))
                 .andExpect(jsonPath("$[0].name").value("Lego"));
+
+        verify(itemRepository).findByCurrentOwnerAndActiveTrue(any(Swapper.class));
     }
 
     @Test
@@ -136,36 +142,42 @@ class ItemControllerTest {
 
     @Test
     void getItemsByType_returnsMatchingItems() throws Exception {
-        given(itemRepository.findByType("toy"))
+        given(itemRepository.findByTypeAndActiveTrue("toy"))
                 .willReturn(List.of(buildItem(1L, "Lego", "toy", "child")));
 
         mockMvc.perform(get("/api/items/type/toy"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1))
                 .andExpect(jsonPath("$[0].type").value("toy"));
+
+        verify(itemRepository).findByTypeAndActiveTrue("toy");
     }
 
     @Test
     void getItemsByAgeLevel_returnsMatchingItems() throws Exception {
-        given(itemRepository.findByAgeLevel("toddler"))
+        given(itemRepository.findByAgeLevelAndActiveTrue("toddler"))
                 .willReturn(List.of(buildItem(1L, "Soft Blocks", "toy", "toddler")));
 
         mockMvc.perform(get("/api/items/age/toddler"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1))
                 .andExpect(jsonPath("$[0].ageLevel").value("toddler"));
+
+        verify(itemRepository).findByAgeLevelAndActiveTrue("toddler");
     }
 
     @Test
-    void createItem_withoutOwner_returns201() throws Exception {
+    void createItem_withoutOwner_returns201WithActiveTrue() throws Exception {
         Item saved = buildItem(1L, "Lego", "toy", "child");
+        saved.setActive(true);
         given(itemRepository.save(any(Item.class))).willReturn(saved);
 
         mockMvc.perform(post("/api/items")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(ITEM_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(1));
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.active").value(true));
     }
 
     @Test
