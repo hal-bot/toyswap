@@ -25,7 +25,7 @@ function renderHomePage(user = mockUser) {
           <Route path="/swap" element={<div>Swap Page</div>} />
         </Routes>
       </MemoryRouter>
-    </AuthContext.Provider>
+    </AuthContext.Provider>,
   );
 }
 
@@ -38,9 +38,7 @@ describe('HomePage', () => {
   it('shows empty-state message when API returns an empty array', async () => {
     server.use(ownerItemsEmpty);
     renderHomePage();
-    await waitFor(() =>
-      expect(screen.getByText(/add some toys/i)).toBeInTheDocument()
-    );
+    await waitFor(() => expect(screen.getByText(/add some toys/i)).toBeInTheDocument());
   });
 
   it('"Add Item" link navigates to /add-item', async () => {

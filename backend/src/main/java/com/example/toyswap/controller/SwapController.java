@@ -3,6 +3,7 @@ package com.example.toyswap.controller;
 import com.example.toyswap.model.Item;
 import com.example.toyswap.model.Swapper;
 import com.example.toyswap.repository.ItemRepository;
+import com.example.toyswap.service.SwapEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +16,11 @@ import java.util.Optional;
 public class SwapController {
 
     private final ItemRepository itemRepository;
+    private final SwapEventPublisher eventPublisher;
 
-    public SwapController(ItemRepository itemRepository) {
+    public SwapController(ItemRepository itemRepository, SwapEventPublisher eventPublisher) {
         this.itemRepository = itemRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     /**
@@ -62,6 +65,9 @@ public class SwapController {
 
         itemRepository.save(offerItem);
         itemRepository.save(requestItem);
+
+        // Publish swap-completed event to SNS (→ SQS → Lambda notification processor)
+        eventPublisher.publishSwapCompleted(offerItem, requestItem);
 
         return ResponseEntity.ok(Map.of("offerItem", offerItem, "requestItem", requestItem));
     }

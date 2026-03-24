@@ -35,7 +35,7 @@ function renderSwapPage(user = mockUser) {
       <MemoryRouter>
         <ItemSwapPage />
       </MemoryRouter>
-    </AuthContext.Provider>
+    </AuthContext.Provider>,
   );
 }
 
@@ -49,34 +49,20 @@ describe('ItemSwapPage', () => {
   });
 
   it('displays up to 20 items without pagination controls', async () => {
-    server.use(
-      http.get('/api/items', () =>
-        HttpResponse.json(makeManyItems(10))
-      )
-    );
+    server.use(http.get('/api/items', () => HttpResponse.json(makeManyItems(10))));
     renderSwapPage();
     await waitFor(() => expect(screen.getByText('Item 1')).toBeInTheDocument());
     expect(screen.queryByRole('button', { name: /next/i })).not.toBeInTheDocument();
   });
 
   it('shows pagination controls when more than 20 items exist', async () => {
-    server.use(
-      http.get('/api/items', () =>
-        HttpResponse.json(makeManyItems(25))
-      )
-    );
+    server.use(http.get('/api/items', () => HttpResponse.json(makeManyItems(25))));
     renderSwapPage();
-    await waitFor(() =>
-      expect(screen.getByRole('button', { name: /next/i })).toBeInTheDocument()
-    );
+    await waitFor(() => expect(screen.getByRole('button', { name: /next/i })).toBeInTheDocument());
   });
 
   it('Next/Prev page buttons advance and retreat the page', async () => {
-    server.use(
-      http.get('/api/items', () =>
-        HttpResponse.json(makeManyItems(25))
-      )
-    );
+    server.use(http.get('/api/items', () => HttpResponse.json(makeManyItems(25))));
     renderSwapPage();
     await waitFor(() => screen.getByRole('button', { name: /next/i }));
 
@@ -95,8 +81,6 @@ describe('ItemSwapPage', () => {
     renderSwapPage();
     await waitFor(() => screen.getByText('Puzzle'));
     await userEvent.click(screen.getByRole('button', { name: /swap/i }));
-    await waitFor(() =>
-      expect(screen.getByText(/pick a toy to swap/i)).toBeInTheDocument()
-    );
+    await waitFor(() => expect(screen.getByText(/pick a toy to swap/i)).toBeInTheDocument());
   });
 });

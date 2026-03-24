@@ -24,7 +24,7 @@ function renderAddItemPage() {
           <Route path="/" element={<div>Home Page</div>} />
         </Routes>
       </MemoryRouter>
-    </AuthContext.Provider>
+    </AuthContext.Provider>,
   );
 }
 
@@ -71,8 +71,6 @@ describe('AddItemPage', () => {
     await userEvent.type(screen.getByLabelText(/toy name/i), 'Broken Toy');
     await userEvent.click(screen.getByRole('button', { name: /add my toy/i }));
 
-    await waitFor(() =>
-      expect(screen.getByText(/could not add your toy/i)).toBeInTheDocument()
-    );
+    await waitFor(() => expect(screen.getByText(/could not add your toy/i)).toBeInTheDocument());
   });
 });

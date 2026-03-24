@@ -15,27 +15,30 @@
   --font-body: 'Patrick Hand', cursive;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
   background-color: var(--crayon-bg);
-  background-image:
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 27px,
-      rgba(173, 216, 230, 0.25) 27px,
-      rgba(173, 216, 230, 0.25) 28px
-    );
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 27px,
+    rgba(173, 216, 230, 0.25) 27px,
+    rgba(173, 216, 230, 0.25) 28px
+  );
   font-family: var(--font-body);
   color: var(--crayon-dark);
   min-height: 100vh;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   font-family: var(--font-heading);
 }
 
@@ -47,7 +50,9 @@ h1, h2, h3 {
   border: 3px solid var(--crayon-dark);
   border-radius: 12px 4px 14px 4px; /* slightly wobbly */
   cursor: pointer;
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  transition:
+    transform 0.1s ease,
+    box-shadow 0.1s ease;
   box-shadow: 4px 4px 0 var(--crayon-dark);
   background: var(--crayon-yellow);
   color: var(--crayon-dark);
@@ -72,11 +77,26 @@ h1, h2, h3 {
   box-shadow: 4px 4px 0 var(--crayon-border);
 }
 
-.btn-red    { background: var(--crayon-red);    color: #fff; }
-.btn-blue   { background: var(--crayon-blue);   color: #fff; }
-.btn-green  { background: var(--crayon-green);  color: #fff; }
-.btn-orange { background: var(--crayon-orange); color: #fff; }
-.btn-yellow { background: var(--crayon-yellow); color: var(--crayon-dark); }
+.btn-red {
+  background: var(--crayon-red);
+  color: #fff;
+}
+.btn-blue {
+  background: var(--crayon-blue);
+  color: #fff;
+}
+.btn-green {
+  background: var(--crayon-green);
+  color: #fff;
+}
+.btn-orange {
+  background: var(--crayon-orange);
+  color: #fff;
+}
+.btn-yellow {
+  background: var(--crayon-yellow);
+  color: var(--crayon-dark);
+}
 
 /* ── Form inputs ────────────────────────────────────────────────────── */
 .form-group {
@@ -263,7 +283,7 @@ nav.topbar .nav-actions {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.55);
+  background: rgba(0, 0, 0, 0.55);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -300,7 +320,9 @@ nav.topbar .nav-actions {
 /* selectable card in modal */
 .modal .card.selectable {
   cursor: pointer;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
 }
 
 .modal .card.selectable:hover {

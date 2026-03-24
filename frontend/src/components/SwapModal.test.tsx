@@ -33,7 +33,7 @@ function renderModal(userItems: Item[] = [userItem], onClose = vi.fn(), onSwapCo
       userItems={userItems}
       onClose={onClose}
       onSwapComplete={onSwapComplete}
-    />
+    />,
   );
 }
 
@@ -86,9 +86,7 @@ describe('SwapModal', () => {
     await userEvent.click(screen.getByText('Lego Set').closest('.card')!);
     await userEvent.click(screen.getByRole('button', { name: /complete swap/i }));
 
-    await waitFor(() =>
-      expect(screen.getByText(/toy swapped/i)).toBeInTheDocument()
-    );
+    await waitFor(() => expect(screen.getByText(/toy swapped/i)).toBeInTheDocument());
   });
 
   it('clicking "Awesome!" after success closes the modal', async () => {

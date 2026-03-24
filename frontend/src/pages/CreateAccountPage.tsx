@@ -24,7 +24,7 @@ export default function CreateAccountPage() {
     setLoading(true);
     try {
       await createAccount({
-        userId: form.username,   // userId === username
+        userId: form.username, // userId === username
         username: form.username,
         firstName: form.firstName,
         lastName: form.lastName,

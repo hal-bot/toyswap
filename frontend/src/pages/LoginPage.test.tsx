@@ -14,7 +14,7 @@ function renderLoginPage(login = (_s: Swapper) => {}) {
       <MemoryRouter>
         <LoginPage />
       </MemoryRouter>
-    </AuthContext.Provider>
+    </AuthContext.Provider>,
   );
 }
 
@@ -33,7 +33,9 @@ describe('LoginPage', () => {
     await userEvent.type(screen.getByLabelText(/password/i), 'secret');
     await userEvent.click(screen.getByRole('button', { name: /log in/i }));
 
-    await waitFor(() => expect(login).toHaveBeenCalledWith(expect.objectContaining({ userId: 'alice' })));
+    await waitFor(() =>
+      expect(login).toHaveBeenCalledWith(expect.objectContaining({ userId: 'alice' })),
+    );
   });
 
   it('on 401 response shows error message', async () => {
@@ -44,7 +46,7 @@ describe('LoginPage', () => {
     await userEvent.click(screen.getByRole('button', { name: /log in/i }));
 
     await waitFor(() =>
-      expect(screen.getByText(/that username or password didn't work/i)).toBeInTheDocument()
+      expect(screen.getByText(/that username or password didn't work/i)).toBeInTheDocument(),
     );
   });
 

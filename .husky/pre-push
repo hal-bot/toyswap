@@ -1,0 +1,5 @@
+# Run frontend unit tests
+cd frontend && npm run test
+
+# Run backend unit tests
+cd ../backend && ./mvnw -B test -q
