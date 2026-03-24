@@ -26,22 +26,46 @@ LAMBDA_FUNCTION_NAME="toyswap-notification-processor"
 SNS_TOPIC_NAME="toyswap-swap-completed"
 SQS_QUEUE_NAME="toyswap-notifications"
 SQS_DLQ_NAME="toyswap-notifications-dlq"
-# Lab environments provide a pre-existing LabRole; IAM create/attach is restricted.
-IAM_ROLE_NAME="${IAM_ROLE_NAME:-LabRole}"
+IAM_ROLE_NAME="toyswap-lambda-role"
 
 echo "==> Deploying ToySwap notification system"
 echo "    Account: $ACCOUNT_ID"
 echo "    Region:  $AWS_REGION"
 echo ""
 
-# ── Step 1: Resolve IAM Role for Lambda ───────────────────────────────────────
-# Lab environments (AWS Academy) deny all iam:* API calls from general-user.
-# The LabRole ARN is always predictable — construct it directly.
-echo "==> Step 1: Resolving IAM role '$IAM_ROLE_NAME'..."
+# ── Step 1: Create/resolve IAM Role for Lambda ────────────────────────────────
+echo "==> Step 1: Creating IAM role '$IAM_ROLE_NAME' (with Lambda trust)..."
 
-ROLE_ARN="arn:aws:iam::${ACCOUNT_ID}:role/${IAM_ROLE_NAME}"
+TRUST_POLICY='{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Allow",
+    "Principal": { "Service": "lambda.amazonaws.com" },
+    "Action": "sts:AssumeRole"
+  }]
+}'
+
+# Try to create the role; if it already exists, fetch its ARN
+ROLE_ARN=$(aws iam create-role \
+  --role-name "$IAM_ROLE_NAME" \
+  --assume-role-policy-document "$TRUST_POLICY" \
+  --query 'Role.Arn' --output text 2>/dev/null) || \
+ROLE_ARN=$(aws iam get-role \
+  --role-name "$IAM_ROLE_NAME" \
+  --query 'Role.Arn' --output text)
+
+# Attach basic execution + SQS trigger policies (ignore errors if already attached)
+aws iam attach-role-policy \
+  --role-name "$IAM_ROLE_NAME" \
+  --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole 2>/dev/null || true
+
+aws iam attach-role-policy \
+  --role-name "$IAM_ROLE_NAME" \
+  --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaSQSQueueExecutionRole 2>/dev/null || true
 
 echo "    Role ARN: $ROLE_ARN"
+echo "    Waiting 10s for role to propagate..."
+sleep 10
 
 # ── Step 2: Create SNS Topic ───────────────────────────────────────────────────
 echo "==> Step 2: Creating SNS topic '$SNS_TOPIC_NAME'..."
