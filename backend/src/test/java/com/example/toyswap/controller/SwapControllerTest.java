@@ -3,6 +3,7 @@ package com.example.toyswap.controller;
 import com.example.toyswap.model.Item;
 import com.example.toyswap.model.Swapper;
 import com.example.toyswap.repository.ItemRepository;
+import com.example.toyswap.service.SwapEventPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,9 @@ class SwapControllerTest {
 
     @MockitoBean
     private ItemRepository itemRepository;
+
+    @MockitoBean
+    private SwapEventPublisher eventPublisher;
 
     @BeforeEach
     void setUp() {
