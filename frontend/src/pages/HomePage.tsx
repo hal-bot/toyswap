@@ -36,8 +36,12 @@ export default function HomePage() {
           T<span className="flip">o</span>ySwa<span className="flip">p</span>
         </span>
         <div className="nav-actions">
-          <Link to="/add-item" className="btn btn-yellow" style={{ fontSize: '1rem' }}>Add Item</Link>
-          <Link to="/swap" className="btn btn-green" style={{ fontSize: '1rem' }}>Swap</Link>
+          <Link to="/add-item" className="btn btn-yellow" style={{ fontSize: '1rem' }}>
+            Add Item
+          </Link>
+          <Link to="/swap" className="btn btn-green" style={{ fontSize: '1rem' }}>
+            Swap
+          </Link>
           <button className="btn btn-red" style={{ fontSize: '1rem' }} onClick={logout}>
             Log Out
           </button>
@@ -46,10 +50,12 @@ export default function HomePage() {
 
       <div className="page">
         <div className="page-header">
-          <h1>
-            Hey, {user?.firstName}! 👋
-          </h1>
-          <button className="btn btn-green" style={{ fontSize: '1.2rem' }} onClick={handleSwapClick}>
+          <h1>Hey, {user?.firstName}! 👋</h1>
+          <button
+            className="btn btn-green"
+            style={{ fontSize: '1.2rem' }}
+            onClick={handleSwapClick}
+          >
             Swap Toys! 🔄
           </button>
         </div>

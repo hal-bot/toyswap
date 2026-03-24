@@ -10,16 +10,16 @@ interface ItemCardProps {
 }
 
 const TYPE_COLORS: Record<string, string> = {
-  toy:  '#f7c948',
+  toy: '#f7c948',
   book: '#4a90d9',
   misc: '#9b59b6',
 };
 
 const CONDITION_LABELS: Record<string, string> = {
-  'new':         'Brand New',
-  'lite wear':   'Lite Wear',
+  new: 'Brand New',
+  'lite wear': 'Lite Wear',
   'medium wear': 'Medium Wear',
-  'heavy wear':  'Heavy Wear',
+  'heavy wear': 'Heavy Wear',
 };
 
 function itemImageUrl(name: string): string {
@@ -48,16 +48,16 @@ export default function ItemCard({
     if (selectable && onSelect) onSelect(item);
   };
 
-  const classNames = [
-    'card',
-    selectable ? 'selectable' : '',
-    selected ? 'selected' : '',
-  ]
+  const classNames = ['card', selectable ? 'selectable' : '', selected ? 'selected' : '']
     .filter(Boolean)
     .join(' ');
 
   return (
-    <div className={classNames} onClick={handleClick} style={{ cursor: selectable ? 'pointer' : 'default' }}>
+    <div
+      className={classNames}
+      onClick={handleClick}
+      style={{ cursor: selectable ? 'pointer' : 'default' }}
+    >
       <img
         src={itemImageUrl(item.name)}
         alt={item.name}

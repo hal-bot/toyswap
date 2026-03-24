@@ -127,16 +127,24 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Run Semgrep
-        uses: semgrep/semgrep-action@v1
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          config: >-
-            p/default
-            p/owasp-top-ten
-            p/java
-            p/javascript
-            p/typescript
-            p/react
+          python-version: '3.12'
+
+      - name: Install Semgrep
+        run: pip install semgrep
+
+      - name: Run Semgrep
+        run: |
+          semgrep scan \
+            --config p/owasp-top-ten \
+            --config p/java \
+            --config p/typescript \
+            --config p/react \
+            --sarif \
+            --output semgrep.sarif \
+            --error
 
       - name: Upload Semgrep results
         if: always()

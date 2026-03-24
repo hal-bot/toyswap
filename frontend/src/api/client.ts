@@ -1,4 +1,11 @@
-import type { Item, Swapper, LoginRequest, CreateSwapperRequest, SwapRequest, SwapResponse } from '../types/api';
+import type {
+  Item,
+  Swapper,
+  LoginRequest,
+  CreateSwapperRequest,
+  SwapRequest,
+  SwapResponse,
+} from '../types/api';
 
 const BASE = '/api';
 
@@ -44,7 +51,10 @@ export async function getItemsByOwner(userId: string): Promise<Item[]> {
   return handleResponse<Item[]>(res);
 }
 
-export async function createItem(item: Omit<Item, 'id' | 'active'>, ownerId: string): Promise<Item> {
+export async function createItem(
+  item: Omit<Item, 'id' | 'active'>,
+  ownerId: string,
+): Promise<Item> {
   const res = await fetch(`${BASE}/items?ownerId=${encodeURIComponent(ownerId)}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

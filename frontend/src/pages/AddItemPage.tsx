@@ -43,7 +43,7 @@ export default function AddItemPage() {
           requireBatteries: form.requireBatteries,
           imageUrl: form.imageUrl || undefined,
         },
-        user.userId
+        user.userId,
       );
       navigate('/');
     } catch {
@@ -60,7 +60,11 @@ export default function AddItemPage() {
           T<span className="flip">o</span>ySwa<span className="flip">p</span>
         </span>
         <div className="nav-actions">
-          <button className="btn btn-yellow" style={{ fontSize: '1rem' }} onClick={() => navigate('/')}>
+          <button
+            className="btn btn-yellow"
+            style={{ fontSize: '1rem' }}
+            onClick={() => navigate('/')}
+          >
             ← Back
           </button>
         </div>
@@ -71,7 +75,14 @@ export default function AddItemPage() {
           <h1 style={{ textAlign: 'center', color: 'var(--crayon-orange)' }}>
             Add a T<span style={{ display: 'inline-block', transform: 'scaleX(-1)' }}>o</span>y! 🧸
           </h1>
-          <p style={{ textAlign: 'center', fontFamily: 'var(--font-heading)', color: '#5d4037', marginTop: 0 }}>
+          <p
+            style={{
+              textAlign: 'center',
+              fontFamily: 'var(--font-heading)',
+              color: '#5d4037',
+              marginTop: 0,
+            }}
+          >
             Tell us about the toy you want to swap!
           </p>
 
@@ -105,7 +116,13 @@ export default function AddItemPage() {
 
             <div className="form-group">
               <label htmlFor="condition">Condition</label>
-              <select id="condition" name="condition" value={form.condition} onChange={handleChange} required>
+              <select
+                id="condition"
+                name="condition"
+                value={form.condition}
+                onChange={handleChange}
+                required
+              >
                 <option value="new">Brand New</option>
                 <option value="lite wear">Lite Wear</option>
                 <option value="medium wear">Medium Wear</option>

@@ -13,7 +13,7 @@ function renderCreateAccountPage() {
         <Route path="/create-account" element={<CreateAccountPage />} />
         <Route path="/login" element={<div>Login Page</div>} />
       </Routes>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 }
 
@@ -42,9 +42,7 @@ describe('CreateAccountPage', () => {
     await userEvent.click(screen.getByRole('button', { name: /let's go/i }));
 
     // After successful creation the page navigates away — the form disappears
-    await waitFor(() =>
-      expect(screen.queryByLabelText(/first name/i)).not.toBeInTheDocument()
-    );
+    await waitFor(() => expect(screen.queryByLabelText(/first name/i)).not.toBeInTheDocument());
   });
 
   it('on 409 response shows "username already taken" error', async () => {
@@ -56,9 +54,7 @@ describe('CreateAccountPage', () => {
     await userEvent.type(screen.getByLabelText(/password/i), 'secret');
     await userEvent.click(screen.getByRole('button', { name: /let's go/i }));
 
-    await waitFor(() =>
-      expect(screen.getByText(/already taken/i)).toBeInTheDocument()
-    );
+    await waitFor(() => expect(screen.getByText(/already taken/i)).toBeInTheDocument());
   });
 
   it('submit button is disabled while request is in flight', async () => {

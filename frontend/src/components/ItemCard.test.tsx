@@ -58,14 +58,14 @@ describe('ItemCard', () => {
 
   it('applies .selected CSS class when selected prop is true', () => {
     const { container } = render(
-      <ItemCard item={baseItem} selectable selected onSelect={vi.fn()} />
+      <ItemCard item={baseItem} selectable selected onSelect={vi.fn()} />,
     );
     expect(container.firstChild).toHaveClass('selected');
   });
 
   it('does not apply .selected CSS class when selected prop is false', () => {
     const { container } = render(
-      <ItemCard item={baseItem} selectable selected={false} onSelect={vi.fn()} />
+      <ItemCard item={baseItem} selectable selected={false} onSelect={vi.fn()} />,
     );
     expect(container.firstChild).not.toHaveClass('selected');
   });

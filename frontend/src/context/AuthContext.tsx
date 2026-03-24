@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  type ReactNode,
-} from 'react';
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import type { Swapper } from '../types/api';
 
 interface AuthContextType {
@@ -52,11 +46,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem('toyswap_user');
   }
 
-  return (
-    <AuthContext.Provider value={{ user, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={{ user, login, logout }}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth(): AuthContextType {

@@ -10,7 +10,12 @@ interface SwapModalProps {
   onSwapComplete: (offerItemId: number, requestItemId: number, receivedItem: Item) => void;
 }
 
-export default function SwapModal({ targetItem, userItems, onClose, onSwapComplete }: SwapModalProps) {
+export default function SwapModal({
+  targetItem,
+  userItems,
+  onClose,
+  onSwapComplete,
+}: SwapModalProps) {
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [loading, setLoading] = useState(false);
   const [swapped, setSwapped] = useState(false);
@@ -41,12 +46,17 @@ export default function SwapModal({ targetItem, userItems, onClose, onSwapComple
         {swapped ? (
           <div style={{ textAlign: 'center' }}>
             <div className="success-banner">
-              Toy swapped! 🎉<br />
+              Toy swapped! 🎉
+              <br />
               <span style={{ fontSize: '1rem', display: 'block', marginTop: '0.5rem' }}>
                 You traded for <strong>{targetItem.name}</strong>!
               </span>
             </div>
-            <button className="btn btn-green" style={{ marginTop: '1.2rem' }} onClick={handleSuccessClose}>
+            <button
+              className="btn btn-green"
+              style={{ marginTop: '1.2rem' }}
+              onClick={handleSuccessClose}
+            >
               Awesome!
             </button>
           </div>

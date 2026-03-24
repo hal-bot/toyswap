@@ -15,9 +15,9 @@ import java.util.Map;
  * locally without AWS credentials (dev/test with H2).
  *
  * Event flow:
- *   SwapController → SwapEventPublisher → SNS topic "toyswap-swap-completed"
- *     → SQS queue "toyswap-notifications"
- *       → Lambda "toyswap-notification-processor"
+ * SwapController → SwapEventPublisher → SNS topic "toyswap-swap-completed"
+ * → SQS queue "toyswap-notifications"
+ * → Lambda "toyswap-notification-processor"
  */
 @Service
 public class SwapEventPublisher {
@@ -41,8 +41,7 @@ public class SwapEventPublisher {
                     "offerItem", Map.of("id", offerItem.getId(), "name", offerItem.getName()),
                     "requestItem", Map.of("id", requestItem.getId(), "name", requestItem.getName()),
                     "offerOwner", offerItem.getCurrentOwner().getUserId(),
-                    "requestOwner", requestItem.getCurrentOwner().getUserId()
-            );
+                    "requestOwner", requestItem.getCurrentOwner().getUserId());
             String message = MAPPER.writeValueAsString(event);
 
             if (snsTopicArn != null && !snsTopicArn.isBlank()) {

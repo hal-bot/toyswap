@@ -52,7 +52,11 @@ export default function ItemSwapPage() {
           T<span className="flip">o</span>ySwa<span className="flip">p</span>
         </span>
         <div className="nav-actions">
-          <button className="btn btn-yellow" style={{ fontSize: '1rem' }} onClick={() => navigate('/')}>
+          <button
+            className="btn btn-yellow"
+            style={{ fontSize: '1rem' }}
+            onClick={() => navigate('/')}
+          >
             ← My Toys
           </button>
         </div>
@@ -61,7 +65,8 @@ export default function ItemSwapPage() {
       <div className="page">
         <div className="page-header">
           <h1>
-            Toys to Swa<span style={{ display: 'inline-block', transform: 'scaleX(-1)' }}>p</span>! 🎁
+            Toys to Swa<span style={{ display: 'inline-block', transform: 'scaleX(-1)' }}>p</span>!
+            🎁
           </h1>
         </div>
 
@@ -84,11 +89,7 @@ export default function ItemSwapPage() {
 
             {totalPages > 1 && (
               <div className="pagination">
-                <button
-                  className="btn"
-                  disabled={page === 1}
-                  onClick={() => setPage((p) => p - 1)}
-                >
+                <button className="btn" disabled={page === 1} onClick={() => setPage((p) => p - 1)}>
                   ← Previous
                 </button>
                 <span>

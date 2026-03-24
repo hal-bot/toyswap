@@ -21,7 +21,7 @@ function renderWithAuth(user: Swapper | null, children: React.ReactNode) {
           <Route path="/login" element={<div>Login Page</div>} />
         </Routes>
       </MemoryRouter>
-    </AuthContext.Provider>
+    </AuthContext.Provider>,
   );
 }
 
