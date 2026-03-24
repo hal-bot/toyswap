@@ -26,47 +26,22 @@ LAMBDA_FUNCTION_NAME="toyswap-notification-processor"
 SNS_TOPIC_NAME="toyswap-swap-completed"
 SQS_QUEUE_NAME="toyswap-notifications"
 SQS_DLQ_NAME="toyswap-notifications-dlq"
-IAM_ROLE_NAME="toyswap-lambda-role"
+# Lab environments provide a pre-existing LabRole; IAM create/attach is restricted.
+IAM_ROLE_NAME="${IAM_ROLE_NAME:-LabRole}"
 
 echo "==> Deploying ToySwap notification system"
 echo "    Account: $ACCOUNT_ID"
 echo "    Region:  $AWS_REGION"
 echo ""
 
-# ── Step 1: Create IAM Role for Lambda ────────────────────────────────────────
-echo "==> Step 1: Creating IAM role '$IAM_ROLE_NAME'..."
+# ── Step 1: Resolve IAM Role for Lambda ───────────────────────────────────────
+# Lab environments (AWS Academy) deny all iam:* API calls from general-user.
+# The LabRole ARN is always predictable — construct it directly.
+echo "==> Step 1: Resolving IAM role '$IAM_ROLE_NAME'..."
 
-TRUST_POLICY='{
-  "Version": "2012-10-17",
-  "Statement": [{
-    "Effect": "Allow",
-    "Principal": { "Service": "lambda.amazonaws.com" },
-    "Action": "sts:AssumeRole"
-  }]
-}'
-
-ROLE_ARN=$(aws iam create-role \
-  --role-name "$IAM_ROLE_NAME" \
-  --assume-role-policy-document "$TRUST_POLICY" \
-  --query 'Role.Arn' \
-  --output text 2>/dev/null) || \
-ROLE_ARN=$(aws iam get-role \
-  --role-name "$IAM_ROLE_NAME" \
-  --query 'Role.Arn' \
-  --output text)
-
-# Attach policies: basic Lambda execution + SQS read access
-aws iam attach-role-policy \
-  --role-name "$IAM_ROLE_NAME" \
-  --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-
-aws iam attach-role-policy \
-  --role-name "$IAM_ROLE_NAME" \
-  --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaSQSQueueExecutionRole
+ROLE_ARN="arn:aws:iam::${ACCOUNT_ID}:role/${IAM_ROLE_NAME}"
 
 echo "    Role ARN: $ROLE_ARN"
-echo "    Waiting for role to propagate..."
-sleep 10
 
 # ── Step 2: Create SNS Topic ───────────────────────────────────────────────────
 echo "==> Step 2: Creating SNS topic '$SNS_TOPIC_NAME'..."
@@ -173,21 +148,35 @@ echo "    Package: $ZIP_FILE"
 
 echo "==> Step 7b: Deploying Lambda function '$LAMBDA_FUNCTION_NAME'..."
 
-# Try create first; if it already exists, update the code
-aws lambda create-function \
+EXISTING_LAMBDA=$(aws lambda get-function \
   --function-name "$LAMBDA_FUNCTION_NAME" \
-  --runtime python3.12 \
-  --role "$ROLE_ARN" \
-  --handler notification_handler.handler \
-  --zip-file "fileb://$ZIP_FILE" \
-  --timeout 30 \
-  --memory-size 128 \
   --region "$AWS_REGION" \
-  --environment "Variables={AWS_REGION=$AWS_REGION}" 2>/dev/null || \
-aws lambda update-function-code \
-  --function-name "$LAMBDA_FUNCTION_NAME" \
-  --zip-file "fileb://$ZIP_FILE" \
-  --region "$AWS_REGION" > /dev/null
+  --query 'Configuration.FunctionArn' \
+  --output text 2>/dev/null || echo "")
+
+if [ -z "$EXISTING_LAMBDA" ]; then
+  echo "    Creating new function..."
+  aws lambda create-function \
+    --function-name "$LAMBDA_FUNCTION_NAME" \
+    --runtime python3.12 \
+    --role "$ROLE_ARN" \
+    --handler notification_handler.handler \
+    --zip-file "fileb://$ZIP_FILE" \
+    --timeout 30 \
+    --memory-size 128 \
+    --region "$AWS_REGION" \
+    --environment "Variables={AWS_REGION=$AWS_REGION}"
+  echo "    Waiting for function to become active..."
+  aws lambda wait function-active \
+    --function-name "$LAMBDA_FUNCTION_NAME" \
+    --region "$AWS_REGION"
+else
+  echo "    Function exists — updating code..."
+  aws lambda update-function-code \
+    --function-name "$LAMBDA_FUNCTION_NAME" \
+    --zip-file "fileb://$ZIP_FILE" \
+    --region "$AWS_REGION" > /dev/null
+fi
 
 LAMBDA_ARN="arn:aws:lambda:$AWS_REGION:$ACCOUNT_ID:function:$LAMBDA_FUNCTION_NAME"
 echo "    Lambda ARN: $LAMBDA_ARN"
