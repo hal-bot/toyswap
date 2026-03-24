@@ -164,8 +164,7 @@ if [ -z "$EXISTING_LAMBDA" ]; then
     --zip-file "fileb://$ZIP_FILE" \
     --timeout 30 \
     --memory-size 128 \
-    --region "$AWS_REGION" \
-    --environment "Variables={AWS_REGION=$AWS_REGION}"
+    --region "$AWS_REGION"
   echo "    Waiting for function to become active..."
   aws lambda wait function-active \
     --function-name "$LAMBDA_FUNCTION_NAME" \
