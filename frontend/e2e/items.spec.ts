@@ -80,4 +80,15 @@ test.describe('Items', () => {
     await page.getByRole('button', { name: /next/i }).click();
     await expect(page.getByRole('button', { name: /previous/i })).toBeVisible();
   });
+
+  test('swap button shows error when user has no items', async ({ page, request }) => {
+    const uid = `e2e_noitems_${Date.now()}`;
+    await createSwapper(request, uid, uid);
+    await loginAs(page, uid);
+
+    await page.getByRole('button', { name: /swap toys/i }).click();
+
+    await expect(page.getByText(/you need to add items before you can swap/i)).toBeVisible();
+    await expect(page).toHaveURL('/');
+  });
 });

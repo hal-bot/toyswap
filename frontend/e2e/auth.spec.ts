@@ -54,4 +54,18 @@ test.describe('Authentication', () => {
     await expect(page).toHaveURL('/');
     await expect(page.getByText(/hey, new/i)).toBeVisible();
   });
+
+  test('logout redirects to login page', async ({ page, request }) => {
+    const uid = `e2e_logout_${Date.now()}`;
+    await createSwapper(request, uid, uid, 'pass123');
+
+    await page.goto('/login');
+    await page.getByLabel(/username/i).fill(uid);
+    await page.getByLabel(/password/i).fill('pass123');
+    await page.getByRole('button', { name: /log in/i }).click();
+    await expect(page).toHaveURL('/');
+
+    await page.getByRole('button', { name: /log out/i }).click();
+    await expect(page).toHaveURL('/login');
+  });
 });
