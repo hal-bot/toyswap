@@ -59,7 +59,7 @@ export default function ItemCard({
       style={{ cursor: selectable ? 'pointer' : 'default' }}
     >
       <img
-        src={itemImageUrl(item.name)}
+        src={item.imageUrl || itemImageUrl(item.name)}
         alt={item.name}
         onError={(e) => {
           (e.target as HTMLImageElement).src = fallbackSvg(item.type);

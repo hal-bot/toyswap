@@ -63,7 +63,7 @@ class SwapControllerTest {
     }
 
     @Test
-    void completeSwap_bothItemsActive_returns200WithBothItemsInactive() throws Exception {
+    void completeSwap_bothItemsActive_returns200WithSwappedOwners() throws Exception {
         Swapper ownerA = buildSwapper("u1");
         Swapper ownerB = buildSwapper("u2");
         Item offerItem = buildActiveItem(1L, "Lego", ownerA);
@@ -77,8 +77,8 @@ class SwapControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"offerItemId\":1,\"requestItemId\":2}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.offerItem.active").value(false))
-                .andExpect(jsonPath("$.requestItem.active").value(false))
+                .andExpect(jsonPath("$.offerItem.active").value(true))
+                .andExpect(jsonPath("$.requestItem.active").value(true))
                 .andExpect(jsonPath("$.offerItem.currentOwner").value("u2"))
                 .andExpect(jsonPath("$.requestItem.currentOwner").value("u1"));
     }

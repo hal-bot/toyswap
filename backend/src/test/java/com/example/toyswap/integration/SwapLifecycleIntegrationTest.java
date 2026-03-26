@@ -179,42 +179,29 @@ class SwapLifecycleIntegrationTest {
                 .andExpect(jsonPath("$.offerItem.currentOwner").value("int_swapB"))
                 .andExpect(jsonPath("$.requestItem.currentOwner").value("int_swapA"));
 
-        // After swap: items are inactive, so they should NOT appear in active listings
+        // After swap: items are still active, with swapped owners
         mockMvc.perform(get("/api/items"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[*].name", not(hasItems("Toy A", "Toy B"))));
+                .andExpect(jsonPath("$[*].name", hasItems("Toy A", "Toy B")));
 
-        // Items still retrievable by direct ID
+        // Toy A now belongs to swapB, Toy B now belongs to swapA
         mockMvc.perform(get("/api/items/" + itemA))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.currentOwner").value("int_swapB"))
-                .andExpect(jsonPath("$.active").value(false));
+                .andExpect(jsonPath("$.active").value(true));
 
         mockMvc.perform(get("/api/items/" + itemB))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.currentOwner").value("int_swapA"))
-                .andExpect(jsonPath("$.active").value(false));
-    }
+                .andExpect(jsonPath("$.active").value(true));
 
-    @Test
-    void swapWithInactiveItem_returns409() throws Exception {
-        createSwapper("int_inactA", "inactA_int", "pass");
-        createSwapper("int_inactB", "inactB_int", "pass");
+        // Items appear under their new owners
+        mockMvc.perform(get("/api/items/owner/int_swapA"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*].name", hasItem("Toy B")));
 
-        long itemA = createItem("int_inactA", "Active Toy", "toy");
-        long itemB = createItem("int_inactB", "Also Active", "toy");
-        long itemC = createItem("int_inactB", "Third Toy", "toy");
-
-        // Swap A and B first
-        mockMvc.perform(post("/api/swaps")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"offerItemId\":%d,\"requestItemId\":%d}".formatted(itemA, itemB)))
-                .andExpect(status().isOk());
-
-        // Try to swap already-inactive itemA again — should get 409
-        mockMvc.perform(post("/api/swaps")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"offerItemId\":%d,\"requestItemId\":%d}".formatted(itemA, itemC)))
-                .andExpect(status().isConflict());
+        mockMvc.perform(get("/api/items/owner/int_swapB"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*].name", hasItem("Toy A")));
     }
 }

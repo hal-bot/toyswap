@@ -127,4 +127,41 @@ test.describe('Swap', () => {
     // Verify Complete Swap is disabled before selection
     await expect(page.getByRole('button', { name: /complete swap/i })).toBeDisabled();
   });
+
+  test('after a swap, received toy appears on home page and given toy does not', async ({
+    page,
+    request,
+  }) => {
+    const ts = Date.now();
+    const uidA = `e2e_swapHomeA_${ts}`;
+    const uidB = `e2e_swapHomeB_${ts}`;
+    await createSwapper(request, uidA, uidA);
+    await createSwapper(request, uidB, uidB);
+    const itemA = await createItem(request, uidA, `GiveAway_${ts}`);
+    const itemB = await createItem(request, uidB, `Received_${ts}`);
+
+    await loginAs(page, uidA);
+
+    // Navigate to swap page
+    await page.getByRole('button', { name: /swap toys/i }).click();
+    await expect(page).toHaveURL('/swap');
+
+    // Click Swap on User B's item
+    await page.getByText(itemB.name).locator('..').getByRole('button', { name: /swap/i }).click();
+    await expect(page.getByRole('heading', { name: new RegExp(itemB.name, 'i'), level: 2 })).toBeVisible();
+    await page.getByText(itemA.name).click();
+
+    // Complete the swap
+    await page.getByRole('button', { name: /complete swap/i }).click();
+    await expect(page.getByText(/toy swapped/i)).toBeVisible();
+    await page.getByRole('button', { name: /awesome/i }).click();
+
+    // Navigate back to home page
+    await page.getByRole('button', { name: /my toys/i }).click();
+    await expect(page).toHaveURL('/');
+
+    // Received item should appear; given-away item should not
+    await expect(page.getByText(itemB.name)).toBeVisible();
+    await expect(page.getByText(itemA.name)).toHaveCount(0);
+  });
 });
