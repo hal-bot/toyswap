@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface SwapperRepository extends JpaRepository<Swapper, String> {
 
-    Optional<Swapper> findByUsernameAndPassword(String username, String password);
+    Optional<Swapper> findByUsername(String username);
 }
