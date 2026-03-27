@@ -4,6 +4,7 @@ import com.example.toyswap.model.Swapper;
 import com.example.toyswap.repository.SwapperRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,9 +15,11 @@ import java.util.Map;
 public class SwapperController {
 
     private final SwapperRepository swapperRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public SwapperController(SwapperRepository swapperRepository) {
+    public SwapperController(SwapperRepository swapperRepository, BCryptPasswordEncoder passwordEncoder) {
         this.swapperRepository = swapperRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping
@@ -36,6 +39,7 @@ public class SwapperController {
         if (swapperRepository.existsById(swapper.getUserId())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
+        swapper.setPassword(passwordEncoder.encode(swapper.getPassword()));
         return ResponseEntity.status(HttpStatus.CREATED).body(swapperRepository.save(swapper));
     }
 
@@ -47,7 +51,8 @@ public class SwapperController {
         if (username == null || password == null) {
             return ResponseEntity.badRequest().build();
         }
-        return swapperRepository.findByUsernameAndPassword(username, password)
+        return swapperRepository.findByUsername(username)
+                .filter(s -> passwordEncoder.matches(password, s.getPassword()))
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
     }
@@ -58,6 +63,9 @@ public class SwapperController {
             return ResponseEntity.notFound().build();
         }
         updated.setUserId(userId);
+        if (updated.getPassword() != null) {
+            updated.setPassword(passwordEncoder.encode(updated.getPassword()));
+        }
         return ResponseEntity.ok(swapperRepository.save(updated));
     }
 

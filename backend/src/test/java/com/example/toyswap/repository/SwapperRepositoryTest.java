@@ -82,27 +82,18 @@ class SwapperRepositoryTest {
     // ── findByUsernameAndPassword tests ───────────────────────────────────────
 
     @Test
-    void findByUsernameAndPassword_matchingCredentials_returnsSwapper() {
+    void findByUsername_matchingCredentials_returnsSwapper() {
         swapperRepository.save(buildSwapper("u1", "asmith"));
 
-        java.util.Optional<Swapper> result = swapperRepository.findByUsernameAndPassword("asmith", "secret");
+        java.util.Optional<Swapper> result = swapperRepository.findByUsername("asmith");
 
         assertThat(result).isPresent();
         assertThat(result.get().getUserId()).isEqualTo("u1");
     }
 
     @Test
-    void findByUsernameAndPassword_wrongPassword_returnsEmpty() {
-        swapperRepository.save(buildSwapper("u1", "asmith"));
-
-        java.util.Optional<Swapper> result = swapperRepository.findByUsernameAndPassword("asmith", "wrongpassword");
-
-        assertThat(result).isEmpty();
-    }
-
-    @Test
-    void findByUsernameAndPassword_nonExistentUsername_returnsEmpty() {
-        java.util.Optional<Swapper> result = swapperRepository.findByUsernameAndPassword("nobody", "secret");
+    void findByUsername_nonExistentUsername_returnsEmpty() {
+        java.util.Optional<Swapper> result = swapperRepository.findByUsername("nobody");
 
         assertThat(result).isEmpty();
     }

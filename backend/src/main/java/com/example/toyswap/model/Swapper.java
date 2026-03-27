@@ -32,7 +32,6 @@ public class Swapper {
     @Column(name = "username", nullable = false, unique = true)
     private String username;
 
-    // TODO: hash with BCrypt before persisting in production
     @Column(name = "password", nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;

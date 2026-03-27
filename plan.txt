@@ -1,0 +1,14 @@
+## Remaining Work
+
+Two cleanup tasks remain:
+
+1. Remove old CI workflow files (backend-ci.yml, frontend-ci.yml superseded by ci-cd.yml)
+2. Merge feat/module5_lambda-deployment to main (Lambda/SNS/SQS work done, needs PR)
+
+All phases otherwise complete:
+Phase 1 DONE: Husky, lint-staged, ESLint, Prettier, Checkstyle, hooks
+Phase 2 DONE: ci-cd.yml, GitHub Environments, Semgrep, Playwright E2E in CI
+Phase 3 DONE: serverless/deploy-lambda.sh, notification_handler.py, verify-deployment.sh
+Phase 4 DONE: Semgrep in CI, DAST documented in DEPLOYMENT.md
+Phase 5 DONE: backend/Dockerfile, frontend/Dockerfile, docker-compose.yml
+Phase 6 DONE: DEPLOYMENT.md, README.md

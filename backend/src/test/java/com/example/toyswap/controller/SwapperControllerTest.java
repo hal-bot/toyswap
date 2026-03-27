@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -31,6 +32,9 @@ class SwapperControllerTest {
 
     @MockitoBean
     private SwapperRepository swapperRepository;
+
+    @MockitoBean
+    private BCryptPasswordEncoder passwordEncoder;
 
     @BeforeEach
     void setUp() {
@@ -101,6 +105,7 @@ class SwapperControllerTest {
     @Test
     void createSwapper_newUser_returns201() throws Exception {
         given(swapperRepository.existsById("u1")).willReturn(false);
+        given(passwordEncoder.encode("secret")).willReturn("$2a$10$hashedvalue");
         given(swapperRepository.save(any(Swapper.class))).willReturn(buildSwapper("u1"));
 
         mockMvc.perform(post("/api/swappers")
@@ -165,8 +170,11 @@ class SwapperControllerTest {
 
     @Test
     void login_validCredentials_returns200WithoutPassword() throws Exception {
-        given(swapperRepository.findByUsernameAndPassword("asmith_u1", "secret"))
-                .willReturn(java.util.Optional.of(buildSwapper("u1")));
+        Swapper stored = buildSwapper("u1");
+        stored.setPassword("$2a$10$hashedvalue");
+        given(swapperRepository.findByUsername("asmith_u1"))
+                .willReturn(java.util.Optional.of(stored));
+        given(passwordEncoder.matches("secret", "$2a$10$hashedvalue")).willReturn(true);
 
         mockMvc.perform(post("/api/swappers/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -179,8 +187,11 @@ class SwapperControllerTest {
 
     @Test
     void login_wrongPassword_returns401() throws Exception {
-        given(swapperRepository.findByUsernameAndPassword("asmith_u1", "wrong"))
-                .willReturn(java.util.Optional.empty());
+        Swapper stored = buildSwapper("u1");
+        stored.setPassword("$2a$10$hashedvalue");
+        given(swapperRepository.findByUsername("asmith_u1"))
+                .willReturn(java.util.Optional.of(stored));
+        given(passwordEncoder.matches("wrong", "$2a$10$hashedvalue")).willReturn(false);
 
         mockMvc.perform(post("/api/swappers/login")
                 .contentType(MediaType.APPLICATION_JSON)
