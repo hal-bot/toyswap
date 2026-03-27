@@ -59,6 +59,9 @@ public class ItemController {
             @RequestParam(required = false) String ownerId) {
         item.setActive(true);
         if (ownerId != null) {
+            if (!swapperRepository.existsById(ownerId)) {
+                return ResponseEntity.notFound().build();
+            }
             swapperRepository.findById(ownerId).ifPresent(item::setCurrentOwner);
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(itemRepository.save(item));
@@ -71,6 +74,7 @@ public class ItemController {
             @RequestParam(required = false) String ownerId) {
         return itemRepository.findById(id).map(existing -> {
             updated.setId(id);
+            updated.setActive(existing.isActive());
             if (ownerId != null) {
                 swapperRepository.findById(ownerId).ifPresent(updated::setCurrentOwner);
             } else {

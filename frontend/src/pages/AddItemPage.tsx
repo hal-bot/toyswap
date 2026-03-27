@@ -10,11 +10,10 @@ export default function AddItemPage() {
 
   const [form, setForm] = useState({
     name: '',
-    type: '',
+    type: 'toy' as ItemType,
     condition: 'new' as ItemCondition,
-    ageLevel: '',
+    ageLevel: 'child' as AgeLevel,
     requireBatteries: false,
-    description: '',
     imageUrl: '',
   });
   const [loading, setLoading] = useState(false);
@@ -37,9 +36,9 @@ export default function AddItemPage() {
       await createItem(
         {
           name: form.name,
-          type: (form.type || 'misc') as ItemType,
+          type: form.type,
           condition: form.condition,
-          ageLevel: (form.ageLevel || 'child') as AgeLevel,
+          ageLevel: form.ageLevel,
           requireBatteries: form.requireBatteries,
           imageUrl: form.imageUrl || undefined,
         },
@@ -104,14 +103,11 @@ export default function AddItemPage() {
 
             <div className="form-group">
               <label htmlFor="type">Toy Type</label>
-              <input
-                id="type"
-                name="type"
-                type="text"
-                value={form.type}
-                onChange={handleChange}
-                placeholder="e.g. Action Figure"
-              />
+              <select id="type" name="type" value={form.type} onChange={handleChange} required>
+                <option value="toy">Toy</option>
+                <option value="book">Book</option>
+                <option value="misc">Misc</option>
+              </select>
             </div>
 
             <div className="form-group">
@@ -132,14 +128,19 @@ export default function AddItemPage() {
 
             <div className="form-group">
               <label htmlFor="ageLevel">Age Level</label>
-              <input
+              <select
                 id="ageLevel"
                 name="ageLevel"
-                type="text"
                 value={form.ageLevel}
                 onChange={handleChange}
-                placeholder="e.g. 5+"
-              />
+                required
+              >
+                <option value="baby">Baby</option>
+                <option value="crawler">Crawler</option>
+                <option value="toddler">Toddler</option>
+                <option value="child">Child</option>
+                <option value="kid">Kid</option>
+              </select>
             </div>
 
             <div className="form-group">
@@ -153,18 +154,6 @@ export default function AddItemPage() {
                 />
                 <label htmlFor="requireBatteries">Requires Batteries 🔋</label>
               </div>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="description">Description</label>
-              <input
-                id="description"
-                name="description"
-                type="text"
-                value={form.description}
-                onChange={handleChange}
-                placeholder="Tell us about your toy"
-              />
             </div>
 
             <div className="form-group">
