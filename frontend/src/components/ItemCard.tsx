@@ -22,10 +22,6 @@ const CONDITION_LABELS: Record<string, string> = {
   'heavy wear': 'Heavy Wear',
 };
 
-function itemImageUrl(name: string): string {
-  return `https://source.unsplash.com/300x200/?${encodeURIComponent(name + ',toy')}`;
-}
-
 function fallbackSvg(type: string): string {
   const color = TYPE_COLORS[type] ?? '#ccc';
   const label = type.charAt(0).toUpperCase() + type.slice(1);
@@ -59,7 +55,7 @@ export default function ItemCard({
       style={{ cursor: selectable ? 'pointer' : 'default' }}
     >
       <img
-        src={item.imageUrl || itemImageUrl(item.name)}
+        src={item.imageUrl || fallbackSvg(item.type)}
         alt={item.name}
         onError={(e) => {
           (e.target as HTMLImageElement).src = fallbackSvg(item.type);

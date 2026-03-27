@@ -185,6 +185,7 @@ class ItemControllerTest {
         Swapper owner = buildSwapper("u1");
         Item saved = buildItem(1L, "Lego", "toy", "child");
         saved.setCurrentOwner(owner);
+        given(swapperRepository.existsById("u1")).willReturn(true);
         given(swapperRepository.findById("u1")).willReturn(Optional.of(owner));
         given(itemRepository.save(any(Item.class))).willReturn(saved);
 
@@ -198,15 +199,13 @@ class ItemControllerTest {
     }
 
     @Test
-    void createItem_withInvalidOwnerId_stillReturns201() throws Exception {
-        Item saved = buildItem(1L, "Lego", "toy", "child");
-        given(swapperRepository.findById("ghost")).willReturn(Optional.empty());
-        given(itemRepository.save(any(Item.class))).willReturn(saved);
+    void createItem_withInvalidOwnerId_returns404() throws Exception {
+        given(swapperRepository.existsById("ghost")).willReturn(false);
 
         mockMvc.perform(post("/api/items?ownerId=ghost")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(ITEM_JSON))
-                .andExpect(status().isCreated());
+                .andExpect(status().isNotFound());
     }
 
     @Test

@@ -6,6 +6,7 @@ import com.example.toyswap.repository.ItemRepository;
 import com.example.toyswap.service.SwapEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -31,6 +32,7 @@ public class SwapController {
      * Returns the two updated items.
      */
     @PostMapping
+    @Transactional
     public ResponseEntity<?> completeSwap(@RequestBody Map<String, Long> body) {
         Long offerItemId = body.get("offerItemId");
         Long requestItemId = body.get("requestItemId");
