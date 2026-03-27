@@ -1,10 +1,12 @@
 # Stage 1: Build (only if JAR not already provided by CI)
 FROM eclipse-temurin:17-jdk-alpine AS build
 WORKDIR /app
-COPY mvnw pom.xml ./
-COPY .mvn .mvn
-COPY src src
-RUN ./mvnw -B package -DskipTests -q
+# Copy root parent POM so Maven can resolve it via relativePath (../pom.xml)
+COPY pom.xml /pom.xml
+COPY backend/mvnw backend/pom.xml ./
+COPY backend/.mvn .mvn
+COPY backend/src src
+RUN --mount=type=cache,target=/root/.m2 ./mvnw -B package -DskipTests -q
 
 # Stage 2: Runtime
 FROM eclipse-temurin:17-jre-alpine
