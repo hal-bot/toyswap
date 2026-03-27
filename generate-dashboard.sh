@@ -58,12 +58,14 @@ import xml.etree.ElementTree as ET
 import json, glob, os
 
 surefire_dir = os.environ.get("SUREFIRE_DIR", "")
-results = []
-total_tests = 0
-total_failures = 0
-total_errors = 0
-total_skipped = 0
-total_time = 0.0
+unit_results = []
+integ_results = []
+
+def make_totals():
+    return {"tests": 0, "failures": 0, "errors": 0, "skipped": 0, "time": 0.0}
+
+unit_totals = make_totals()
+integ_totals = make_totals()
 
 for xml_file in sorted(glob.glob(os.path.join(surefire_dir, "TEST-*.xml"))):
     try:
@@ -76,11 +78,17 @@ for xml_file in sorted(glob.glob(os.path.join(surefire_dir, "TEST-*.xml"))):
         skipped = int(root.get("skipped", 0))
         time = float(root.get("time", 0))
 
-        total_tests += tests
-        total_failures += failures
-        total_errors += errors
-        total_skipped += skipped
-        total_time += time
+        # Determine if this is an integration test
+        is_integration = ".integration." in suite_name or "Integration" in suite_name
+
+        target_results = integ_results if is_integration else unit_results
+        target_totals = integ_totals if is_integration else unit_totals
+
+        target_totals["tests"] += tests
+        target_totals["failures"] += failures
+        target_totals["errors"] += errors
+        target_totals["skipped"] += skipped
+        target_totals["time"] += time
 
         # Extract individual test cases
         test_cases = []
@@ -100,7 +108,7 @@ for xml_file in sorted(glob.glob(os.path.join(surefire_dir, "TEST-*.xml"))):
             test_cases.append({"name": tc_name, "status": status, "time": round(tc_time, 3), "message": message})
 
         short_name = suite_name.split(".")[-1] if "." in suite_name else suite_name
-        results.append({
+        target_results.append({
             "suite": short_name,
             "fullName": suite_name,
             "tests": tests,
@@ -113,16 +121,14 @@ for xml_file in sorted(glob.glob(os.path.join(surefire_dir, "TEST-*.xml"))):
     except Exception as e:
         pass
 
+def finalize(totals):
+    totals["passed"] = totals["tests"] - totals["failures"] - totals["errors"] - totals["skipped"]
+    totals["time"] = round(totals["time"], 3)
+    return totals
+
 output = {
-    "suites": results,
-    "totals": {
-        "tests": total_tests,
-        "passed": total_tests - total_failures - total_errors - total_skipped,
-        "failures": total_failures,
-        "errors": total_errors,
-        "skipped": total_skipped,
-        "time": round(total_time, 3)
-    }
+    "unit": {"suites": unit_results, "totals": finalize(unit_totals)},
+    "integration": {"suites": integ_results, "totals": finalize(integ_totals)}
 }
 print(json.dumps(output))
 PYEOF
@@ -457,6 +463,9 @@ output_file = sys.argv[6]
 backend_cov = json.loads(sys.argv[7])
 frontend_cov = json.loads(sys.argv[8])
 
+be_unit = backend["unit"]
+be_integ = backend["integration"]
+
 def status_icon(status):
     if status == "passed": return "✅"
     if status == "failed": return "❌"
@@ -474,7 +483,8 @@ def pct_bar(value, max_val, colour="#4caf50"):
     return f'<div class="bar-bg"><div class="bar-fill" style="width:{pct:.1f}%;background:{colour}"></div></div>'
 
 # Summary numbers
-be_totals = backend["totals"]
+be_totals = be_unit["totals"]
+integ_totals = be_integ["totals"]
 fe_totals = frontend["totals"]
 e2e_totals = e2e["totals"]
 mut_score = mutation["mutationScore"]
@@ -482,9 +492,9 @@ mut_total = mutation["totalMutations"]
 mut_killed = mutation["total"]["killed"]
 mut_survived = mutation["total"]["survived"]
 
-all_tests = be_totals["tests"] + fe_totals["tests"] + e2e_totals["tests"]
-all_passed = be_totals["passed"] + fe_totals["passed"] + e2e_totals["passed"]
-all_failed = be_totals["failures"] + be_totals.get("errors", 0) + fe_totals["failed"] + e2e_totals["failed"]
+all_tests = be_totals["tests"] + integ_totals["tests"] + fe_totals["tests"] + e2e_totals["tests"]
+all_passed = be_totals["passed"] + integ_totals["passed"] + fe_totals["passed"] + e2e_totals["passed"]
+all_failed = be_totals["failures"] + be_totals.get("errors", 0) + integ_totals["failures"] + integ_totals.get("errors", 0) + fe_totals["failed"] + e2e_totals["failed"]
 
 overall_status = "ALL PASSING" if all_failed == 0 else f"{all_failed} FAILING"
 overall_colour = "#4caf50" if all_failed == 0 else "#f44336"
@@ -515,7 +525,8 @@ def build_suite_rows(suites, section_id):
           </tr>''')
     return "\n".join(rows)
 
-be_rows = build_suite_rows(backend["suites"], "be")
+be_rows = build_suite_rows(be_unit["suites"], "be")
+integ_rows = build_suite_rows(be_integ["suites"], "integ")
 fe_rows = build_suite_rows(frontend["suites"], "fe")
 e2e_rows = build_suite_rows(e2e["suites"], "e2e")
 
@@ -788,6 +799,11 @@ dashboard_html = f'''<!DOCTYPE html>
     <div class="sub">{be_totals["passed"]} passed &middot; {be_totals["failures"]} failed &middot; {be_totals["time"]}s</div>
   </div>
   <div class="card">
+    <h3>Integration</h3>
+    <div class="big-num" style="color:{"var(--green)" if integ_totals["failures"]+integ_totals.get("errors",0)==0 else "var(--red)"}">{integ_totals["tests"]}</div>
+    <div class="sub">{integ_totals["passed"]} passed &middot; {integ_totals["failures"]} failed &middot; {integ_totals["time"]}s</div>
+  </div>
+  <div class="card">
     <h3>Frontend Unit</h3>
     <div class="big-num" style="color:{"var(--green)" if fe_totals["failed"]==0 else "var(--red)"}">{fe_totals["tests"]}</div>
     <div class="sub">{fe_totals["passed"]} passed &middot; {fe_totals["failed"]} failed &middot; {fe_totals["time"]}s</div>
@@ -914,6 +930,24 @@ dashboard_html = f'''<!DOCTYPE html>
         <td class="num pass">{be_totals["passed"]}</td>
         <td class="num fail">{be_totals["failures"] + be_totals.get("errors", 0)}</td>
         <td class="num">{be_totals["time"]}s</td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+<!-- Integration Tests -->
+<div class="section">
+  <h2>🔗 Integration Tests (JUnit / SpringBootTest)</h2>
+  <table>
+    <thead><tr><th>Suite</th><th class="num">Tests</th><th class="num">Passed</th><th class="num">Failed</th><th class="num">Time</th></tr></thead>
+    <tbody>{integ_rows}</tbody>
+    <tfoot>
+      <tr style="font-weight:700;background:#fdf0db">
+        <td>Total</td>
+        <td class="num">{integ_totals["tests"]}</td>
+        <td class="num pass">{integ_totals["passed"]}</td>
+        <td class="num fail">{integ_totals["failures"] + integ_totals.get("errors", 0)}</td>
+        <td class="num">{integ_totals["time"]}s</td>
       </tr>
     </tfoot>
   </table>
