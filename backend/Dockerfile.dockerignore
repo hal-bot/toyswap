@@ -1,0 +1,9 @@
+backend/target/
+frontend/
+serverless/
+.git/
+**/.idea/
+**/*.iml
+**/.classpath
+**/.project
+**/.settings/
