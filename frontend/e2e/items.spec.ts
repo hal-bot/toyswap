@@ -40,8 +40,7 @@ test.describe('Items', () => {
     await page.getByRole('link', { name: /add item/i }).click();
     await page.getByLabel(/toy name/i).fill('Super Toy');
     await page.getByLabel(/toy type/i).selectOption('toy');
-    await page.getByLabel(/age level/i).fill('5+');
-    await page.getByLabel(/description/i).fill('A great toy');
+    await page.getByLabel(/age level/i).selectOption('child');
     await page.getByLabel(/image url/i).fill('http://example.com/toy.jpg');
     await page.getByRole('button', { name: /add my toy/i }).click();
 
